@@ -14,6 +14,7 @@ WIDTH = int(RATIO*HEIGHT)
 DISPLAYSURF = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Hello World!')
 
+# Bonjour 
 
 # Transforme les couleurs sous la forme [0;1] vers [0;255]
 # Car pygame nécéssite que les couleurs soient sous cette forme
