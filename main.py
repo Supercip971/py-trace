@@ -4,6 +4,7 @@ from pygame.locals import *
 # initialise le système de pygame
 pygame.init()
 
+# bonjour 2
 
 # La fenêtre aura 480 pixels de hauteur
 # Et la largeur aura 16/9 de la hauteur soit ~853 pixels
