@@ -46,11 +46,19 @@ class Vec3:
         # |v| = sqrt(x^2 + y^2 + z^2)
         return math.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
 
+    def inv_length(self):
+        # 1 / |v| = 1 / sqrt(x^2 + y^2 + z^2)
+        return (self.x ** 2 + self.y ** 2 + self.z ** 2) ** -.5
+
+    def squared_length(self):
+        # |v|^2 = x^2 + y^2 + z^2
+        return self.x ** 2 + self.y ** 2 + self.z ** 2
+
     def normalize(self):
         # v_x = x / |v|
         # v_y = y / |v|
         # v_z = z / |v|
-        return self * (1 / self.length())
+        return self * self.inv_length()
 
     def distance(self, other):
         # d = |v - v'|
