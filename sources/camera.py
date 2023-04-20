@@ -1,4 +1,4 @@
-from vector import Vec3
+from vector import Vec3, cross
 from ray import Ray
 import math
 
@@ -17,11 +17,11 @@ class Camera:
         self.z_axis = forward.normalize()
         # La normale du plan formé depuis le dessus de la caméra et le devant de
         # la caméra est la droite/gauche de la caméra.
-        right = self.z_axis.cross(self.up)
+        right = cross(self.z_axis, self.up)
         self.x_axis = right.normalize()
         # le dessus est la normale du plan formé par le devant et la droite de
         # la caméra.
-        self.y_axis = self.x_axis.cross(self.z_axis)
+        self.y_axis = cross(self.x_axis, self.z_axis)
 
         self.half_height = math.tan(math.radians(self.fov) / 2)
         self.half_width = self.aspect_ratio * self.half_height

@@ -40,6 +40,8 @@ class Vec3:
         if isinstance(other, (float, int)):
             return Vec3(self.x * other, self.y * other, self.z * other)
 
+    __rmul__ = __mul__
+
     def length(self):
         # |v| = sqrt(x^2 + y^2 + z^2)
         return math.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
