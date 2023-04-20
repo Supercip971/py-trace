@@ -3,6 +3,7 @@ import sys
 from pygame.locals import *
 from pygame import gfxdraw
 from camera import Camera
+from shapes.sphere import Sphere
 from vector import Vec3
 from color import Color
 # initialise le système de pygame
@@ -24,6 +25,7 @@ DISPLAYSURF = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('py-trace')
 
 
+sphere = Sphere(Vec3(0, 0, -1), 0.5, None)
 camera = Camera(Vec3(0, 0, 1), Vec3(0, 0, 0), Vec3(0, 1, 0), 90, RATIO)
 
 
@@ -58,10 +60,8 @@ while True:  # main game loop
         pygame.display.update()
         for x in WIDTH_R:
             ray = camera.get_ray(x/WIDTH, y/HEIGHT)
-
-            gfxdraw.pixel(DISPLAYSURF, x, y, sky(ray).pygame_color())
-      #      pygame.display.update((x, y, 1, 1))
-
-        #    DISPLAYSURF.blit(DISPLAYSURF, (x, y))
-      #  DISPLAYSURF.set_at((x, y), sky(ray).pygame_color())
-    # On met à jour la fenêtre.
+            ray.direction = ray.direction.normalize()
+            if(sphere.intersect(ray, 0.001, 10000.0)):
+                DISPLAYSURF.set_at((x, y), Color(1, 0, 0).pygame_color())
+            else:
+                DISPLAYSURF.set_at((x, y), sky(ray).pygame_color())
