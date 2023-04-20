@@ -28,7 +28,11 @@ class Camera:
 
     # ray from camera to pixel
     def get_ray(self, u, v):
-        x = self.half_width * (2*u - 1)
-        y = self.half_height * (2*v - 1)
-        direction = x * self.x_axis + y * self.y_axis - self.z_axis
+        # u et v sont des valeurs entre 0 et 1 qui représentent la position du
+        # pixel sur l'écran
+
+        z = self.z_axis
+        x = self.x_axis * self.half_width * (2 * u - 1)
+        y = self.y_axis * self.half_height * (2 * v - 1)
+        direction = z - x - y
         return Ray(self.pos, direction)
