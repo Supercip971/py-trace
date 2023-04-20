@@ -1,6 +1,8 @@
 
 from shapes.shape import Shape
 
+from record import Record
+
 from ray import Ray
 
 from vector import dot
@@ -12,7 +14,7 @@ class Sphere(Shape):
         self.center = center
         self.radius = radius
 
-    def intersect(self, ray: Ray, min, max):
+    def intersect(self, ray: Ray, tmin, tmax):
 
         pprime = ray.origin - self.center
 
@@ -27,13 +29,22 @@ class Sphere(Shape):
             # entre le point minimum et le point maximum du rayon
             t1 = (-b - discriminant**0.5) / (2.0 * a)
             t2 = (-b + discriminant**0.5) / (2.0 * a)
-            print('t1: ', t1, 't2: ', t2, 'min: ', min, 'max: ', max)
-            if t1 < max and t1 > min:
-                return True
-            if t2 < max and t2 > min:
-                return True
 
-            return False
+            # on prend la plus petite valeur de t1 et t2 et c'est la valeur 't'
+            # de la droite, ainsi, si on l'applique à la droite, on obtient le
+            # point d'intersection
+            at = ray.point_at(min(t1, t2))
 
-        # Timplemente ici l'intersection avec une sphere
-        return False
+            # la normale d'un cercle est le vecteur qui va du centre du cercle
+            # au point d'intersection, on le normalize pour qu'il ait une
+            # longueur de 1
+            normal = (at - self.center).normalize()
+
+            if t1 < tmax and t1 > tmin:
+                return Record.do_intersect(at, normal, min(t1, t2), self.material)
+            if t2 < tmax and t2 > tmin:
+                return Record.do_intersect(at, normal, min(t1, t2), self.material)
+
+            return Record.no_intersect()
+
+        return Record.no_intersect()

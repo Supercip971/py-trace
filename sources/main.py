@@ -3,6 +3,7 @@ import sys
 from pygame.locals import *
 from pygame import gfxdraw
 from camera import Camera
+from vector import dot
 from shapes.sphere import Sphere
 from vector import Vec3
 from color import Color
@@ -61,7 +62,10 @@ while True:  # main game loop
         for x in WIDTH_R:
             ray = camera.get_ray(x/WIDTH, y/HEIGHT)
             ray.direction = ray.direction.normalize()
-            if(sphere.intersect(ray, 0.001, 10000.0)):
-                DISPLAYSURF.set_at((x, y), Color(1, 0, 0).pygame_color())
+
+            rec = sphere.intersect(ray, 0.001, 10000.0)
+            if(rec.hitted):
+                d = dot(rec.normal, ray.direction)
+                DISPLAYSURF.set_at((x, y), Color(abs(d), 0, 0).pygame_color())
             else:
                 DISPLAYSURF.set_at((x, y), sky(ray).pygame_color())
