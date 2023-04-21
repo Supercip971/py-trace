@@ -1,5 +1,7 @@
 import math
 
+import random
+
 
 def dot(v1, v2):
     # v * v' = x * x' + y * y' + z * z'
@@ -73,3 +75,25 @@ class Vec3:
         len_self = self.length()
         len_other = other.length()
         return math.acos(dot_product / (len_self * len_other))
+
+    # NOTE: ce n'est pas un bon moyen de calculer un vecteur aléatoire
+    # il faudrait plutôt utiliser deux angles sur la sphère puis calculer
+    # le vecteur qui correspond à ces angles
+    @staticmethod
+    def random_unit_vector():
+        x = random.uniform(-1, 1)
+        y = random.uniform(-1, 1)
+        z = random.uniform(-1, 1)
+
+        return Vec3(x, y, z).normalize()
+
+    @staticmethod
+    def random_vector_in_hemisphere(normal):
+        r = Vec3.random_unit_vector()
+
+        # si r est dans la même direction que la normale, on le renvoie
+        # sinon on le renvoie dans l'autre sens
+        if (dot(r, normal) > 0.0):
+            return r
+
+        return r * -1
