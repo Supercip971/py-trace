@@ -6,6 +6,8 @@ from camera import Camera
 from vector import dot
 from shapes.sphere import Sphere
 from vector import Vec3
+from materials.lambertian import Lambertian
+
 from world import World
 from color import Color
 # initialise le système de pygame
@@ -16,7 +18,7 @@ pygame.init()
 #  La fenêtre aura 480 pixels de hauteur
 # Et la largeur aura 16/9 de la hauteur soit ~853 pixels
 RATIO = 16/9
-HEIGHT = 1080
+HEIGHT = 720
 WIDTH = int(RATIO*HEIGHT)
 
 WIDTH_R = range(WIDTH)
@@ -27,12 +29,30 @@ DISPLAYSURF = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('py-trace')
 
 
-sphere = Sphere(Vec3(0, 0, -1), 0.5, None)
+mat2 = Lambertian(Color(0.9, 0.9, 0.9))
+mat1_1 = Lambertian(Color(0.8, 0.3, 0.3))
+mat1_2 = Lambertian(Color(0.3, 0.8, 0.3))
+mat1_3 = Lambertian(Color(0.3, 0.3, 0.8))
+
+
+sphere1_1 = Sphere(Vec3(-1, 0, -1), 0.5, mat1_1)
+sphere1_2 = Sphere(Vec3(0, 0, -1), 0.5, mat1_2)
+sphere1_3 = Sphere(Vec3(1, 0, -1), 0.5, mat1_3)
+
+
+sphere2 = Sphere(Vec3(0, -100.5, -1), 100, mat2)
+
 camera = Camera(Vec3(0, 0, 1), Vec3(0, 0, 0), Vec3(0, 1, 0), 90, RATIO)
 
 world = World(camera, Color(0.5, 0.7, 1))
 
-world.add_shape(sphere)
+world.add_shape(sphere1_1)
+world.add_shape(sphere1_2)
+
+world.add_shape(sphere1_3)
+
+
+world.add_shape(sphere2)
 # coloration du ciel venant de https://raytracing.github.io/books/RayTracingInOneWeekend.html
 
 
@@ -41,7 +61,10 @@ world.add_shape(sphere)
 #    t = 0.5*(unit_direction.y + 1)
 #    return Color(1, 1, 1)*(1-t) + Color(0.5, 0.7, 1)*t
 
+sample = 1.0
 
+
+screen = [[Color(0.0, 0.0, 0.0) for i in range(HEIGHT)] for i in range(WIDTH)]
 while True:  # main game loop
 
     clock.tick(60)
@@ -51,27 +74,32 @@ while True:  # main game loop
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
-    #  - JUSTE POUR TESTER -
-    #  Pour chaque pixel de la fenêtre
-    # On met la couleur à:
-    #  rouge: x/WIDTH
-    # vert: y/HEIGHT
-    #  bleu: x+y/(WIDTH+HEIGHT)
-
-    #  NOTE: On utilises des couleur qui ont des valeurs de
-    #  0 à 1 contrairement a d'autres cas où on a besoins
-    # de couleurs de 0 à 255
 
     for y in HEIGHT_R:
         pygame.display.update()
         for x in WIDTH_R:
             ray = camera.get_ray(x/WIDTH, y/HEIGHT)
             ray.direction = ray.direction.normalize()
+            color = Color(1, 1, 1)
+            for c in range(16):  #  16 rebonds
+                rec = world.intersect(ray)
 
-            rec = world.intersect(ray)
+                if (rec.hitted):
 
-            if (rec.hitted):
-                d = dot(rec.normal, ray.direction)
-                DISPLAYSURF.set_at((x, y), Color(abs(d), 0, 0).pygame_color())
-            else:
-                DISPLAYSURF.set_at((x, y), world.background.pygame_color())
+                    scatter = rec.material.scatter(ray, rec)
+                    ray = scatter.scattered
+                    color = color * scatter.color
+                 #   d = dot(rec.normal, ray.direction)
+                else:
+                    color = color * world.background
+                    break
+
+           # print(
+           #     f"{x} {y} color: {color.r} {color.g} {color.b} sample: {screen[x][y]}")
+            screen[x][y] = screen[x][y] + color
+
+            col = (screen[x][y]) * (1.0/float(sample))
+            DISPLAYSURF.set_at(
+                (x, y), col.pygame_color())
+
+    sample += 1.0
