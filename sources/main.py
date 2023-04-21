@@ -6,13 +6,14 @@ from camera import Camera
 from vector import dot
 from shapes.sphere import Sphere
 from vector import Vec3
+from world import World
 from color import Color
 # initialise le système de pygame
 pygame.init()
 
-# bonjour 2
+#  bonjour 2
 
-# La fenêtre aura 480 pixels de hauteur
+#  La fenêtre aura 480 pixels de hauteur
 # Et la largeur aura 16/9 de la hauteur soit ~853 pixels
 RATIO = 16/9
 HEIGHT = 1080
@@ -29,12 +30,16 @@ pygame.display.set_caption('py-trace')
 sphere = Sphere(Vec3(0, 0, -1), 0.5, None)
 camera = Camera(Vec3(0, 0, 1), Vec3(0, 0, 0), Vec3(0, 1, 0), 90, RATIO)
 
+world = World(camera, Color(0.5, 0.7, 1))
 
+world.add_shape(sphere)
 # coloration du ciel venant de https://raytracing.github.io/books/RayTracingInOneWeekend.html
-def sky(ray):
-    unit_direction = ray.direction.normalize()
-    t = 0.5*(unit_direction.y + 1)
-    return Color(1, 1, 1)*(1-t) + Color(0.5, 0.7, 1)*t
+
+
+# def sky(ray):
+#    unit_direction = ray.direction.normalize()
+#    t = 0.5*(unit_direction.y + 1)
+#    return Color(1, 1, 1)*(1-t) + Color(0.5, 0.7, 1)*t
 
 
 while True:  # main game loop
@@ -46,15 +51,15 @@ while True:  # main game loop
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
-    # - JUSTE POUR TESTER -
-    # Pour chaque pixel de la fenêtre
+    #  - JUSTE POUR TESTER -
+    #  Pour chaque pixel de la fenêtre
     # On met la couleur à:
-    # rouge: x/WIDTH
+    #  rouge: x/WIDTH
     # vert: y/HEIGHT
-    # bleu: x+y/(WIDTH+HEIGHT)
+    #  bleu: x+y/(WIDTH+HEIGHT)
 
-    # NOTE: On utilises des couleur qui ont des valeurs de
-    # 0 à 1 contrairement a d'autres cas où on a besoins
+    #  NOTE: On utilises des couleur qui ont des valeurs de
+    #  0 à 1 contrairement a d'autres cas où on a besoins
     # de couleurs de 0 à 255
 
     for y in HEIGHT_R:
@@ -63,9 +68,10 @@ while True:  # main game loop
             ray = camera.get_ray(x/WIDTH, y/HEIGHT)
             ray.direction = ray.direction.normalize()
 
-            rec = sphere.intersect(ray, 0.001, 10000.0)
-            if(rec.hitted):
+            rec = world.intersect(ray)
+
+            if (rec.hitted):
                 d = dot(rec.normal, ray.direction)
                 DISPLAYSURF.set_at((x, y), Color(abs(d), 0, 0).pygame_color())
             else:
-                DISPLAYSURF.set_at((x, y), sky(ray).pygame_color())
+                DISPLAYSURF.set_at((x, y), world.background.pygame_color())
