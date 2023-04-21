@@ -7,6 +7,8 @@ from ray import Ray
 
 from vector import dot
 
+import math
+
 
 class Sphere(Shape):
     def __init__(self, center, radius, material):
@@ -14,7 +16,7 @@ class Sphere(Shape):
         self.center = center
         self.radius = radius
 
-    def intersect(self, ray: Ray, tmin, tmax):
+    def intersect(self, ray, tmin, tmax):
 
         pprime = ray.origin - self.center
 
@@ -40,10 +42,11 @@ class Sphere(Shape):
             # longueur de 1
             normal = (at - self.center).normalize()
 
+            # FIXME: on ne prend pas en compte les cas où t2 est plus petit que t1
             if t1 < tmax and t1 > tmin:
-                return Record.do_intersect(at, normal, min(t1, t2), self.material)
+                return Record.do_intersect(at, normal, t1, self.material)
             if t2 < tmax and t2 > tmin:
-                return Record.do_intersect(at, normal, min(t1, t2), self.material)
+                return Record.do_intersect(at, normal, t2, self.material)
 
             return Record.no_intersect()
 

@@ -21,11 +21,11 @@ class World:
 
     def intersect(self, ray):
         record = Record.no_intersect()
-        tmin = 0.001
+        tmin = 0.0001
         tmax = 100000
         for shape in self.shapes:
             current_record = shape.intersect(ray, tmin, tmax)
-            if (current_record.hitted):
+            if (current_record.hitted and current_record.t < tmax and current_record.t > tmin):
                 tmax = current_record.t
                 record = current_record
 
