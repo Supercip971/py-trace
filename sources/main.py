@@ -1,5 +1,6 @@
 import pygame
 import sys
+from numba import jit
 from pygame.locals import *
 from pygame import gfxdraw
 from camera import Camera
@@ -11,13 +12,16 @@ from materials.lambertian import Lambertian
 from world import World
 from color import Color
 # initialise le système de pygame
+import numpy as np
+
+
 pygame.init()
 
 #  bonjour 2
 
 #  La fenêtre aura 480 pixels de hauteur
 # Et la largeur aura 16/9 de la hauteur soit ~853 pixels
-RATIO = 16/9
+RATIO = 16.0/9.0
 HEIGHT = 720
 WIDTH = int(RATIO*HEIGHT)
 
@@ -48,9 +52,7 @@ world = World(camera, Color(0.5, 0.7, 1))
 
 world.add_shape(sphere1_1)
 world.add_shape(sphere1_2)
-
 world.add_shape(sphere1_3)
-
 
 world.add_shape(sphere2)
 # coloration du ciel venant de https://raytracing.github.io/books/RayTracingInOneWeekend.html
@@ -64,7 +66,7 @@ world.add_shape(sphere2)
 sample = 1.0
 
 
-screen = [[Color(0.0, 0.0, 0.0) for i in range(HEIGHT)] for i in range(WIDTH)]
+screen = np.array([[Color(0.0, 0.0, 0.0) for i in range(HEIGHT)] for i in range(WIDTH)])
 while True:  # main game loop
 
     clock.tick(60)
