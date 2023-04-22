@@ -1,6 +1,8 @@
+import numpy as np
+from color import Color
+from world import World
 import pygame
 import sys
-from numba import jit
 from pygame.locals import *
 from pygame import gfxdraw
 from camera import Camera
@@ -9,10 +11,9 @@ from shapes.sphere import Sphere
 from vector import Vec3
 from materials.lambertian import Lambertian
 
-from world import World
-from color import Color
+from random import uniform
+
 # initialise le système de pygame
-import numpy as np
 
 
 pygame.init()
@@ -66,7 +67,8 @@ world.add_shape(sphere2)
 sample = 1.0
 
 
-screen = np.array([[Color(0.0, 0.0, 0.0) for i in range(HEIGHT)] for i in range(WIDTH)])
+screen = np.array([[Color(0.0, 0.0, 0.0) for i in range(HEIGHT)]
+                  for i in range(WIDTH)])
 while True:  # main game loop
 
     clock.tick(60)
@@ -80,25 +82,32 @@ while True:  # main game loop
     for y in HEIGHT_R:
         pygame.display.update()
         for x in WIDTH_R:
-            ray = camera.get_ray(x/WIDTH, y/HEIGHT)
-            ray.direction = ray.direction.normalize()
-            color = Color(1, 1, 1)
-            for c in range(16):  #  16 rebonds
-                rec = world.intersect(ray)
+            ccolor = Color(0, 0, 0)
+            for k in range(6):
 
-                if (rec.hitted):
+                rx = (float(x) + uniform(0, 1)) / WIDTH
+                ry = (float(y) + uniform(0, 1)) / HEIGHT
+                ray = camera.get_ray(rx, ry)
+                ray.direction = ray.direction.normalize()
 
-                    scatter = rec.material.scatter(ray, rec)
-                    ray = scatter.scattered
-                    color = color * scatter.color
-                 #   d = dot(rec.normal, ray.direction)
-                else:
-                    color = color * world.background
-                    break
+                color = Color(1, 1, 1)
+                for c in range(8):  #  16 rebonds
+                    rec = world.intersect(ray)
+
+                    if (rec.hitted):
+
+                        scatter = rec.material.scatter(ray, rec)
+                        ray = scatter.scattered
+                        color = color * scatter.color
+                     #   d = dot(rec.normal, ray.direction)
+                    else:
+                        color = color * world.background
+                        break
+                ccolor = ccolor + color
 
            # print(
            #     f"{x} {y} color: {color.r} {color.g} {color.b} sample: {screen[x][y]}")
-            screen[x][y] = screen[x][y] + color
+            screen[x][y] = screen[x][y] + ccolor * (1/8.0)
 
             col = (screen[x][y]) * (1.0/float(sample))
             DISPLAYSURF.set_at(
