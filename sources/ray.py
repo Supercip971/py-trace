@@ -3,7 +3,7 @@ from vector import Vec3
 
 
 class Ray:
-    def __init__(self, origin, direction):
+    def __init__(self, origin=Vec3(0, 0, 0), direction=Vec3(0, 0, 0)):
         self.origin = origin
         self.direction = direction
 

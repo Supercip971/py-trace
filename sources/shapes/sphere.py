@@ -22,6 +22,7 @@ class Sphere(Shape):
 
         a = 1.0
         b = 2.0 * dot(ray.direction, pprime)
+
         c = dot(pprime, pprime) - self.radius * self.radius
 
         discriminant = b * b - 4 * a * c
@@ -43,11 +44,14 @@ class Sphere(Shape):
             normal = (at - self.center).normalize()
 
             # FIXME: on ne prend pas en compte les cas où t2 est plus petit que t1
-            if t1 < tmax and t1 > tmin:
-                return Record.do_intersect(at, normal, t1, self.material)
-            if t2 < tmax and t2 > tmin:
-                return Record.do_intersect(at, normal, t2, self.material)
 
-            return Record.no_intersect()
+            t = t1
+
+            if t < tmin or t > tmax:
+                t = t2
+                if t < tmin or t > tmax:
+                    return Record.no_intersect()
+
+            return Record.do_intersect(ray, at, normal, t, self.material)
 
         return Record.no_intersect()
