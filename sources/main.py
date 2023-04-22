@@ -1,6 +1,3 @@
-import numpy as np
-from color import Color
-from world import World
 import pygame
 import sys
 from pygame.locals import *
@@ -13,7 +10,10 @@ from materials.lambertian import Lambertian
 
 from random import uniform
 
+from world import World
+from color import Color
 # initialise le système de pygame
+import numpy as np
 
 
 pygame.init()
@@ -34,7 +34,7 @@ DISPLAYSURF = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('py-trace')
 
 
-mat2 = Lambertian(Color(0.9, 0.9, 0.9))
+mat2 = Lambertian(Color(0.5, 0.5, 0.5))
 mat1_1 = Lambertian(Color(0.8, 0.3, 0.3))
 mat1_2 = Lambertian(Color(0.3, 0.8, 0.3))
 mat1_3 = Lambertian(Color(0.3, 0.3, 0.8))
@@ -111,6 +111,6 @@ while True:  # main game loop
 
             col = (screen[x][y]) * (1.0/float(sample))
             DISPLAYSURF.set_at(
-                (x, y), col.pygame_color())
+                (x, y), col.tonemapped().pygame_color())
 
     sample += 1.0

@@ -33,14 +33,25 @@ class Color:
         return str(f"({self.r}, {self.g}, {self.b})")
 
     def __div__(self, other):
+        if (isinstance(other, Color)):
+            return Color(self.r / other.r, self.g / other.g, self.b / other.b)
         return Color(self.r / other, self.g / other, self.b / other)
     __rmul__ = __mul__
     __rdiv__ = __div__
     # Pygame demandes des couleurs de 0 à 255 en entiers, alors on transforme
     #  les couleurs de 0 à 1 en couleurs de 0 à 255
 
-    def gamma_correct(self):
-        return Color(min(self.r, 1.0), min(self.g, 1.0), min(self.b, 1.0))
+    def tonemap_value(self, value):
+        a = 2.51
+        b = 0.03
+        c = 2.43
+        d = 0.59
+        e = 0.14
+        return (
+            (value * (a * value + b)) / (value * (c * value + d) + e))
+
+    def tonemapped(self):
+        return Color(self.tonemap_value(self.r), self.tonemap_value(self.g), self.tonemap_value(self.b))
       #  return Color(min(sqrt((self.r)), 1.0), min(sqrt((self.g)), 1.0), min(sqrt((self.b)), 1.0))
 
     def pygame_color(self):
