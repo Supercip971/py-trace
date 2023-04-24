@@ -9,7 +9,8 @@ from shapes.sphere import Sphere
 from shapes.box import Box
 from vector import Vec3
 from materials.lambertian import Lambertian
-from materials.glass import Glass 
+from materials.glass import Glass
+from materials.metal import Metal
 
 
 from random import uniform
@@ -38,7 +39,7 @@ DISPLAYSURF = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('py-trace')
 
 
-mat2 = Lambertian(Color(0.5, 0.5, 0.5))
+mat2 = Metal(Color(0.5, 0.5, 0.5), 0.001)
 mat1_1 = Glass(Color(0.8, 0.3, 0.3))
 mat1_2 = Glass(Color(0.3, 0.8, 0.3))
 mat1_3 = Lambertian(Color(0.3, 0.3, 0.8))
@@ -90,7 +91,7 @@ while True:  # main game loop
     for y in HEIGHT_R:
         pygame.display.update()
         for x in WIDTH_R:
-            ccolor = Color(0, 0, 0)
+            ccolor = Color(0.0, 0.0, 0.0)
             for k in range(1):
 
                 rx = (float(x) + uniform(0, 1)) / WIDTH
@@ -99,6 +100,7 @@ while True:  # main game loop
                 ray.direction = ray.direction.normalize()
 
                 color = Color(1, 1, 1)
+                would_hit = False
                 for c in range(8):  #  16 rebonds
                     rec = world.intersect(ray)
 
@@ -110,12 +112,16 @@ while True:  # main game loop
                      #   d = dot(rec.normal, ray.direction)
                     else:
                         color = color * world.background
+                        would_hit = True
                         break
+                if not would_hit:
+                    color = Color(0, 0, 0)
+
                 ccolor = ccolor + color
 
            # print(
            #     f"{x} {y} color: {color.r} {color.g} {color.b} sample: {screen[x][y]}")
-            screen[x][y] = screen[x][y] + ccolor 
+            screen[x][y] = screen[x][y] + ccolor
 
             col = (screen[x][y]) * (1.0/float(sample))
             DISPLAYSURF.set_at(
