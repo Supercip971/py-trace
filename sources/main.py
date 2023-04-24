@@ -9,6 +9,8 @@ from shapes.sphere import Sphere
 from shapes.box import Box
 from vector import Vec3
 from materials.lambertian import Lambertian
+from materials.glass import Glass 
+
 
 from random import uniform
 
@@ -37,8 +39,8 @@ pygame.display.set_caption('py-trace')
 
 
 mat2 = Lambertian(Color(0.5, 0.5, 0.5))
-mat1_1 = Lambertian(Color(0.8, 0.3, 0.3))
-mat1_2 = Lambertian(Color(0.3, 0.8, 0.3))
+mat1_1 = Glass(Color(0.8, 0.3, 0.3))
+mat1_2 = Glass(Color(0.3, 0.8, 0.3))
 mat1_3 = Lambertian(Color(0.3, 0.3, 0.8))
 
 
@@ -89,7 +91,7 @@ while True:  # main game loop
         pygame.display.update()
         for x in WIDTH_R:
             ccolor = Color(0, 0, 0)
-            for k in range(6):
+            for k in range(1):
 
                 rx = (float(x) + uniform(0, 1)) / WIDTH
                 ry = (float(y) + uniform(0, 1)) / HEIGHT
@@ -113,7 +115,7 @@ while True:  # main game loop
 
            # print(
            #     f"{x} {y} color: {color.r} {color.g} {color.b} sample: {screen[x][y]}")
-            screen[x][y] = screen[x][y] + ccolor * (1/8.0)
+            screen[x][y] = screen[x][y] + ccolor 
 
             col = (screen[x][y]) * (1.0/float(sample))
             DISPLAYSURF.set_at(
