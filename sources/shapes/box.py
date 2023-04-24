@@ -38,7 +38,7 @@ class Box(Shape):
             return Vec3(0, 0, 0)
 
     def intersect(self, ray, tmin, tmax):
-
+        ray.direction = ray.direction + Vec3(0.00001,0.00001,0.00001)
         tx_0 = (self.min_p.x - ray.origin.x) / ray.direction.x
         tx_1 = (self.max_p.x - ray.origin.x) / ray.direction.x
 
