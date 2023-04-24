@@ -97,9 +97,21 @@ class Vec3:
             return r
         return -1.0 * r
 
-def refract(v, n, ior):
-    k = 1.0-  ior * ior * (1.0 - dot(v,n) * dot(v,n))
-    if k <= 0.0:
-        return Vec3(0,0,0)
-    return ior * v - (ior * dot(n, v) + math.sqrt(k)) * n
 
+def refract(v, n, ior):
+    v = v.normalize()
+    n = n.normalize()
+    cos_theta = min(1.0, dot(-1.0 * v, n))
+    r_out_perp = (v + (n * cos_theta)) * ior
+    r_out_parl = n * -math.sqrt(abs(1.0 - r_out_perp.squared_length()))
+    return r_out_perp + r_out_parl
+
+
+def reflect(v, n):
+    return v - 2.0 * dot(v, n) * n
+
+
+def schlick(angle, ior):
+    r0 = (1.0 - ior) / (1.0 + ior)
+    r0 = r0 * r0
+    return r0 + (1.0 - r0) * (1.0 - angle) ** 5.0

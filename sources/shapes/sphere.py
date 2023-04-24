@@ -36,12 +36,10 @@ class Sphere(Shape):
             # on prend la plus petite valeur de t1 et t2 et c'est la valeur 't'
             # de la droite, ainsi, si on l'applique à la droite, on obtient le
             # point d'intersection
-            at = ray.point_at(min(t1, t2))
 
             # la normale d'un cercle est le vecteur qui va du centre du cercle
             # au point d'intersection, on le normalize pour qu'il ait une
             # longueur de 1
-            normal = (at - self.center).normalize()
 
             # FIXME: on ne prend pas en compte les cas où t2 est plus petit que t1
 
@@ -52,6 +50,9 @@ class Sphere(Shape):
                 if t < tmin or t > tmax:
                     return Record.no_intersect()
 
+            at = ray.point_at(t)
+
+            normal = (at - self.center).normalize()
             return Record.do_intersect(ray, at, normal, t, self.material)
 
         return Record.no_intersect()
