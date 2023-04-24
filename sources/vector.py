@@ -95,5 +95,11 @@ class Vec3:
         # sinon on le renvoie dans l'autre sens
         if (dot(r, normal) > 0.0):
             return r
+        return -1.0 * r
 
-        return r * -1
+def refract(v, n, ior):
+    k = 1.0-  ior * ior * (1.0 - dot(v,n) * dot(v,n))
+    if k <= 0.0:
+        return Vec3(0,0,0)
+    return ior * v - (ior * dot(n, v) + math.sqrt(k)) * n
+
