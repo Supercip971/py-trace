@@ -1,6 +1,7 @@
 
 # Projet de groupe: raytracer en python
 
+![demo-2023-04-24](schema/demo-scene-basique.png)
 ## Prérequis 
 Nous demandons une version récente de python, (testé sur 3.10 et 3.11+)
 - pygame:
