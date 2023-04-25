@@ -12,6 +12,7 @@ from materials.lambertian import Lambertian
 from materials.glass import Glass
 from materials.metal import Metal
 
+from materials.light import Light
 
 from random import uniform
 
@@ -39,9 +40,9 @@ DISPLAYSURF = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('py-trace')
 
 
-mat2 = Metal(Color(0.5, 0.5, 0.5), 0.001)
+mat2 = Lambertian(Color(0.5, 0.5, 0.5))
 mat1_1 = Glass(Color(0.8, 0.3, 0.3))
-mat1_2 = Glass(Color(0.3, 0.8, 0.3))
+mat1_2 = Light(Color(0.0, 0.8, 0.0), 10.0)
 mat1_3 = Lambertian(Color(0.3, 0.3, 0.8))
 
 
@@ -105,10 +106,14 @@ while True:  # main game loop
                     rec = world.intersect(ray)
 
                     if (rec.hitted):
-
+                        
                         scatter = rec.material.scatter(ray, rec)
+
                         ray = scatter.scattered
                         color = color * scatter.color
+                        if(not scatter.bounce):
+                            would_hit = True
+                            break
                      #   d = dot(rec.normal, ray.direction)
                     else:
                         color = color * world.background

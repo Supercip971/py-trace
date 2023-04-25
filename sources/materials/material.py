@@ -3,9 +3,10 @@ from color import Color
 
 class MaterialScatter:
 
-    def __init__(self, scattered, color):
+    def __init__(self, scattered, color, bounce = True):
         self.scattered = scattered
         self.color = color
+        self.bounce = bounce
 
 
 # la classe parente du matériaux, en général un matériaux va avoir une fonction

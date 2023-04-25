@@ -17,5 +17,4 @@ class Lambertian(Material):
         reflection = (
             record.normal + Vec3.random_vector_in_hemisphere(record.normal)).normalize()
 
-    #    col = self.color * abs(dot(record.normal, ray.direction))
         return MaterialScatter(Ray(record.point, reflection), self.color)
