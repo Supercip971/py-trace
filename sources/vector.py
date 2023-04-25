@@ -24,8 +24,9 @@ class Vec3:
         self.z = float(z)
 
     def __str__(self):
-        return str(f"({self.x}, {self.y}, {self.z})")
-
+ #      return str(f"({self.x}, {self.y}, {self.z})")
+        return str("")
+        
     def __add__(self, other):
         # v_x = x + x'
         # v_y = y + y'

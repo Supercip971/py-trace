@@ -6,8 +6,7 @@
 # C'est plus utile pour les calculs et plus précis que les couleurs de 0 à 255 entiers
 from math import sqrt
 from vector import Vec3
-
-
+from utils import clamp
 class Color:
 
     def __init__(self, r=1.0, g=1.0, b=1.0):
@@ -47,8 +46,8 @@ class Color:
         c = 2.43
         d = 0.59
         e = 0.14
-        return (
-            (value * (a * value + b)) / (value * (c * value + d) + e))
+        return clamp(
+            (value * (a * value + b)) / (value * (c * value + d) + e), 0.0, 1.0)
 
     def tonemapped(self):
         return Color(self.tonemap_value(self.r), self.tonemap_value(self.g), self.tonemap_value(self.b))

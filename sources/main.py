@@ -18,6 +18,7 @@ from random import uniform
 
 from world import World
 from color import Color
+from scenes.scenes import load_scene
 # initialise le système de pygame
 import numpy as np
 
@@ -29,7 +30,7 @@ pygame.init()
 #  La fenêtre aura 480 pixels de hauteur
 # Et la largeur aura 16/9 de la hauteur soit ~853 pixels
 RATIO = 16.0/9.0
-HEIGHT = 720
+HEIGHT = 480*2
 WIDTH = int(RATIO*HEIGHT)
 
 WIDTH_R = range(WIDTH)
@@ -38,34 +39,6 @@ HEIGHT_R = range(HEIGHT)
 clock = pygame.time.Clock()
 DISPLAYSURF = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('py-trace')
-
-
-mat2 = Lambertian(Color(0.5, 0.5, 0.5))
-mat1_1 = Glass(Color(0.8, 0.3, 0.3))
-mat1_2 = Light(Color(0.0, 0.8, 0.0), 10.0)
-mat1_3 = Lambertian(Color(0.3, 0.3, 0.8))
-
-
-sphere1_1 = Sphere(Vec3(0, 0, -1), 0.5, mat1_1)
-# sphere1_2 = Sphere(Vec3(0, 0, -1), 0.5, mat1_2)
-box1_2 = Box(Vec3(-1, 0, -1) - Vec3(0.3, 0.3, 0.3),
-             Vec3(-1, 0, -1) + Vec3(0.3, 0.3, 0.3), mat1_2)
-
-
-sphere1_3 = Sphere(Vec3(1, 0, -1), 0.5, mat1_3)
-
-
-sphere2 = Sphere(Vec3(0, -100.5, -1), 100, mat2)
-
-camera = Camera(Vec3(0, 0, 1), Vec3(0, 0, 0), Vec3(0, 1, 0), 90, RATIO)
-
-world = World(camera, Color(0.5, 0.7, 1))
-
-world.add_shape(sphere1_1)
-world.add_shape(box1_2)
-world.add_shape(sphere1_3)
-
-world.add_shape(sphere2)
 # coloration du ciel venant de https://raytracing.github.io/books/RayTracingInOneWeekend.html
 
 
@@ -76,6 +49,7 @@ world.add_shape(sphere2)
 
 sample = 1.0
 
+world = load_scene()
 
 screen = np.array([[Color(0.0, 0.0, 0.0) for i in range(HEIGHT)]
                   for i in range(WIDTH)])
@@ -89,7 +63,8 @@ while True:  # main game loop
             pygame.quit()
             sys.exit()
 
-    for y in HEIGHT_R:
+    for ry in HEIGHT_R:
+        y = (HEIGHT-1) - ry
         pygame.display.update()
         for x in WIDTH_R:
             ccolor = Color(0.0, 0.0, 0.0)
@@ -97,12 +72,12 @@ while True:  # main game loop
 
                 rx = (float(x) + uniform(0, 1)) / WIDTH
                 ry = (float(y) + uniform(0, 1)) / HEIGHT
-                ray = camera.get_ray(rx, ry)
+                ray = world.camera.get_ray(rx, ry)
                 ray.direction = ray.direction.normalize()
 
                 color = Color(1, 1, 1)
                 would_hit = False
-                for c in range(8):  #  16 rebonds
+                for c in range(6):  #  16 rebonds
                     rec = world.intersect(ray)
 
                     if (rec.hitted):
