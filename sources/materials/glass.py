@@ -4,6 +4,7 @@ from color import Color
 from vector import Vec3, dot, refract, reflect, schlick
 from ray import Ray
 from random import random
+from utils import remap
 # un lambertian est un matériau qui renvoie une réflexion uniforme
 # dans toutes les directions de manière uniforme (cf: doc/matériaux.pdf).
 
@@ -21,9 +22,13 @@ class Glass(Material):
             ef_ior = self.ior
 
         refraction = refract(ray.direction, record.normal, ef_ior)
-        p2 = record.point + ray.direction * 0.01
+        p2 = record.point - ray.direction * 0.01
 
         if (random() < schlick(dot(-1.0 * ray.direction, record.normal), ef_ior)):
-            return MaterialScatter(Ray(p2, reflect(ray.direction, record.normal)), Vec3(1.0, 1.0, 1.0))
+          #  color = self.color
+            angle = abs(dot(-1.0 * ray.direction, record.normal))
+            color = self.color * angle + Color(1.0, 1.0, 1.0) * (1.0 - angle)
+            return MaterialScatter(Ray(p2, reflect(ray.direction, record.normal)), color)
+        p2 = record.point + ray.direction * 0.01
 
         return MaterialScatter(Ray(p2, refraction), self.color)

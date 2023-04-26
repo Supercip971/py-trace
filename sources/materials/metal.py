@@ -27,6 +27,9 @@ class Metal(Material):
         refl = (refl +
                 Vec3.random_vector_in_hemisphere(record.normal) * (self.rougness)).normalize()
 
+      #  if (dot(refl, record.normal) < 0):
+       #     refl = reflect(ray.direction, record.normal).normalize()
+
      #   refl = reflect(ray.direction, normal).normalize()
-        c = record.point - ray.direction * 0.01
-        return MaterialScatter(Ray(c, refl), self.color)
+      #  c = record.point - ray.direction * 0.1
+        return MaterialScatter(Ray(record.point, refl), self.color)
