@@ -16,6 +16,20 @@ def cross(v1, v2):
         v1.x * v2.y - v1.y * v2.x)
 
 
+def vmin(v1, v2):
+    return Vec3(
+        min(v1.x, v2.x),
+        min(v1.y, v2.y),
+        min(v1.z, v2.z))
+
+
+def vmax(v1, v2):
+    return Vec3(
+        max(v1.x, v2.x),
+        max(v1.y, v2.y),
+        max(v1.z, v2.z))
+
+
 class Vec3:
 
     def __init__(self, x, y, z):
@@ -24,9 +38,9 @@ class Vec3:
         self.z = float(z)
 
     def __str__(self):
- #      return str(f"({self.x}, {self.y}, {self.z})")
+     #      return str(f"({self.x}, {self.y}, {self.z})")
         return str("")
-        
+
     def __add__(self, other):
         # v_x = x + x'
         # v_y = y + y'
