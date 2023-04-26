@@ -30,7 +30,7 @@ pygame.init()
 #  La fenêtre aura 480 pixels de hauteur
 # Et la largeur aura 16/9 de la hauteur soit ~853 pixels
 RATIO = 16.0/9.0
-HEIGHT = 480*2
+HEIGHT = 1080
 WIDTH = int(RATIO*HEIGHT)
 
 WIDTH_R = range(WIDTH)
@@ -64,11 +64,12 @@ while True:  # main game loop
             sys.exit()
 
     for ry in HEIGHT_R:
-        y = (HEIGHT-1) - ry
+        y = ry
         pygame.display.update()
         for x in WIDTH_R:
             ccolor = Color(0.0, 0.0, 0.0)
-            for k in range(1):
+            sample_count = 1
+            for k in range(sample_count):
 
                 rx = (float(x) + uniform(0, 1)) / WIDTH
                 ry = (float(y) + uniform(0, 1)) / HEIGHT
@@ -81,12 +82,12 @@ while True:  # main game loop
                     rec = world.intersect(ray)
 
                     if (rec.hitted):
-                        
+
                         scatter = rec.material.scatter(ray, rec)
 
                         ray = scatter.scattered
                         color = color * scatter.color
-                        if(not scatter.bounce):
+                        if (not scatter.bounce):
                             would_hit = True
                             break
                      #   d = dot(rec.normal, ray.direction)
@@ -97,7 +98,7 @@ while True:  # main game loop
                 if not would_hit:
                     color = Color(0, 0, 0)
 
-                ccolor = ccolor + color
+                ccolor = ccolor + (color * (1.0/sample_count))
 
            # print(
            #     f"{x} {y} color: {color.r} {color.g} {color.b} sample: {screen[x][y]}")
