@@ -7,16 +7,15 @@ from record import Record
 from ray import Ray
 
 
-from vector import dot, Vec3
-
+from vector import dot, Vec3, vmin, vmax
 import math
 
 
 class Box(Shape):
     def __init__(self,  min_pos, max_pos, material):
         Shape.__init__(self, material)
-        self.min_p = min_pos
-        self.max_p = max_pos
+        self.min_p = vmin(min_pos, max_pos)
+        self.max_p = vmax(min_pos, max_pos)
 
     def normal_get(self, ray, t):
         p = ray.point_at(t)
@@ -38,30 +37,30 @@ class Box(Shape):
             return Vec3(0, 0, 0)
 
     def intersect(self, ray, tmin, tmax):
-        ray.direction = ray.direction + Vec3(0.00001,0.00001,0.00001)
+        ray.direction = ray.direction + Vec3(0.0001, 0.0001, 0.0001)
         tx_0 = (self.min_p.x - ray.origin.x) / ray.direction.x
         tx_1 = (self.max_p.x - ray.origin.x) / ray.direction.x
 
-        tmin = max(tmin, min(tx_0, tx_1))
-        tmax = min(tmax, max(tx_0, tx_1))
-        if tmin > tmax:
+        ctmin = max(tmin, min(tx_0, tx_1))
+        ctmax = min(tmax, max(tx_0, tx_1))
+        if ctmin >= ctmax:
             return Record.no_intersect()
 
         ty_0 = (self.min_p.y - ray.origin.y) / ray.direction.y
         ty_1 = (self.max_p.y - ray.origin.y) / ray.direction.y
 
-        tmin = max(tmin, min(ty_0, ty_1))
-        tmax = min(tmax, max(ty_0, ty_1))
-        if tmin > tmax:
+        ctmin = max(ctmin, min(ty_0, ty_1))
+        ctmax = min(ctmax, max(ty_0, ty_1))
+        if ctmin >= ctmax:
             return Record.no_intersect()
 
         tz_0 = (self.min_p.z - ray.origin.z) / ray.direction.z
         tz_1 = (self.max_p.z - ray.origin.z) / ray.direction.z
 
-        tmin = max(tmin, min(tz_0, tz_1))
-        tmax = min(tmax, max(tz_0, tz_1))
+        ctmin = max(ctmin, min(tz_0, tz_1))
+        ctmax = min(ctmax, max(tz_0, tz_1))
 
-        if tmin > tmax:
+        if ctmin >= ctmax:
             return Record.no_intersect()
 
-        return Record.do_intersect(ray, ray.point_at(tmin), self.normal_get(ray, tmin), tmin, self.material)
+        return Record.do_intersect(ray, ray.point_at(ctmin), self.normal_get(ray, ctmin), ctmin, self.material)
