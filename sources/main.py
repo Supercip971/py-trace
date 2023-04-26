@@ -45,9 +45,10 @@ if world is None:
 # gestion de la fenêtre et de pygame
 
 ratio = 16.0/9.0
-width = args.height if args.height else 480
-height = args.width if args.width else int(ratio*width)
+height = args.height if args.height else 480
+width = args.width if args.width else int(ratio*height)
 
+ratio = float(width)/float(height)
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -68,7 +69,7 @@ while True:
     print(f"Le rendu de l'image n°({sample}) a prit: {clock.get_rawtime()}ms")
     # Pour chaque évènements, si c'est un évènement "Exit" on quitte
     for event in pygame.event.get():
-        if event.type == QUIT:
+        if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 

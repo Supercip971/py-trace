@@ -26,7 +26,6 @@ def load():
                       Vec3(x+1.0, random()-2.0, z+1.0), ground_mat)
             world.add_shape(box)
 
-  #  wall_mat = Lambertian(Color(0.8, 0.8, 0.8))
     left_wall = Box(Vec3(-8, -10, -6.0), Vec3(-7, 10, 8.0),
                     Lambertian(Color(0.8, 0.1, 0.1)))
     right_wall = Box(Vec3(7, -10, -6.0), Vec3(8, 10, 8.0),
@@ -34,10 +33,6 @@ def load():
 
     world.add_shape(left_wall)
     world.add_shape(right_wall)
-   # mat = Lambertian(Color(0.1, 0.8, 0.1))
-   # box = Box(Vec3(-8, -10, -8), Vec3(8+1.0, random()-2.0, 8+1.0), mat)
-   # world.add_shape(box)
-
     for x in range(-3, 4):
         c = x + 3.0
         mat = Metal(Color(0.5, 0.5, 0.5), (float(c)/6.0)**2.0)
