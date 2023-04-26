@@ -28,7 +28,7 @@ def load():
     camera = Camera(Vec3(0, 2.0, -19.819), Vec3(0, 2.0, 0.0),
                     Vec3(0, 1, 0), 15, 16/9)
 
-    world = World(camera, Color(0.1, 0.1, 0.1))
+    world = World(camera, Color(0.5, 0.7, 1))
     world.add_shape(put_white_sphere(Vec3(0, 0.405664, 0), 1 / 2.0))  # 000
     world.add_shape(put_white_sphere(Vec3(0, 1.6067, 0), 0.819 / 2.0))  # 001
     world.add_shape(put_white_sphere(Vec3(0, 2.6355, 0), 0.578/2.0))  # 002
@@ -55,16 +55,28 @@ def load():
     world.add_shape(put_white_sphere(
         Vec3(0.21733, -0.44912, -0.53142), 1/2.0))  # 019
 
-    red_light = Light(Color(1.0, 0.0, 0.0), 3.0)
-    blue_light = Light(Color(0.0, 0.0, 1.0), 3.0)
+ #   for i in range(0, 20):
+ #       world.add_shape(Sphere(
+ #           Vec3(random() * 6 - 3, random() * 6 - 2.0, random() * 6 - 3), 0.066, Light(Color(random(), random(), random()), 2.0)))
 
+ #   world.add_shape((Vec3(0, 2.6355, 0) - Vec3(0.6, 0.6, 0.6), Vec3(0,
+  #                  2.6355, 0) + Vec3(0.6, 0.6, 0.6), Glass(Color(0.6, 0.6, 1.0))))
+   # world.add_shape(Sphere(Vec3(0, 2.6355, 0), 0.778,
+  #                  Glass(Color(0.5, 0.5, 1.0))))  # 002
+
+    blue_light = Light(Color(0.0, 0.0, 1.0), 1.0)
+    white_light = Light(Color(1.0, 1.0, 1.0), 3.0)
+
+    for y in range(0, 7):
+        world.add_shape(Box(Vec3(4, (y - 3.5)*2.0, -20), Vec3(5, (y - 3.5) * 2.0 + 1.0, 20),
+                            Lambertian(Color(0.020, 0.020, 0.020))))
     # sphere1_2 = Sphere(Vec3(0, 0, -1), 0.5, mat1_2)
     light_box = Box(Vec3(7.77356, 1.396, 0) - Vec3(2.747, 2.0*2.747, 2.0*2.747),
-                    Vec3(7.77356, 1.396, 0) + Vec3(2.747, 2.0*2.747, 2.0*2.747), red_light)
+                    Vec3(7.77356, 1.396, 0) + Vec3(2.747, 2.0*2.747, 2.0*2.747), blue_light)
     world.add_shape(light_box)
 
     light_box = Box(Vec3(-7.77356, 1.396, 0) - Vec3(2.747, 2.0*2.747, 2.0*2.747),
-                    Vec3(-7.77356, 1.396, 0) + Vec3(2.747, 2.0*2.747, 2.0*2.747), blue_light)
+                    Vec3(-7.77356, 1.396, 0) + Vec3(2.747, 2.0*2.747, 2.0*2.747), white_light)
     world.add_shape(light_box)
 
     return world

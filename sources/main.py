@@ -1,110 +1,92 @@
 import pygame
 import sys
-from pygame.locals import *
-from pygame import gfxdraw
-from camera import Camera
-from vector import dot
-from shapes.sphere import Sphere
-
-from shapes.box import Box
-from vector import Vec3
-from materials.lambertian import Lambertian
-from materials.glass import Glass
-from materials.metal import Metal
-
-from materials.light import Light
-
+import argparse
 from random import uniform
+
 
 from world import World
 from color import Color
-from scenes.scenes import load_scene
+from scenes.scenes import load_scene, list_scene
 # initialise le système de pygame
 import numpy as np
 
+from render import render_ray
+
+# gestion des arguments
+
+
+def help_scene():
+    print("Vous devez spécifier une scène à charger avec --scene")
+    print("Exemple: main.py --scene basic")
+    print("Les scènes disponibles sont :")
+    list_scene()
+    sys.exit(1)
+
+
+parser = argparse.ArgumentParser(
+    prog='py-trace', description="Un raytracer (open source) codé en python")
+parser.add_argument("--scene", help="Le nom de la scène à charger")
+parser.add_argument("--width", help="La largeur de l'image")
+parser.add_argument("--height", help="La hauteur de l'image")
+
+args = parser.parse_args()
+
+# gestion de la scène
+if not args.scene:
+    help_scene()
+
+world = load_scene(args.scene)
+
+if world is None:
+    print(f"la scène {args.scene} n'existe pas")
+    help_scene()
+
+
+# gestion de la fenêtre et de pygame
+
+ratio = 16.0/9.0
+width = args.height if args.height else 480
+height = args.width if args.width else int(ratio*width)
 
 pygame.init()
 
-#  bonjour 2
-
-#  La fenêtre aura 480 pixels de hauteur
-# Et la largeur aura 16/9 de la hauteur soit ~853 pixels
-RATIO = 16.0/9.0
-HEIGHT = 1080
-WIDTH = int(RATIO*HEIGHT)
-
-WIDTH_R = range(WIDTH)
-HEIGHT_R = range(HEIGHT)
-
 clock = pygame.time.Clock()
-DISPLAYSURF = pygame.display.set_mode((WIDTH, HEIGHT))
+DISPLAYSURF = pygame.display.set_mode((width, height))
+
 pygame.display.set_caption('py-trace')
-# coloration du ciel venant de https://raytracing.github.io/books/RayTracingInOneWeekend.html
 
-
-# def sky(ray):
-#    unit_direction = ray.direction.normalize()
-#    t = 0.5*(unit_direction.y + 1)
-#    return Color(1, 1, 1)*(1-t) + Color(0.5, 0.7, 1)*t
-
+# une table des pixels de l'écran
+screen = np.array(
+    [
+        [Color(0.0, 0.0, 0.0) for i in range(height)]
+        for i in range(width)
+    ])
 sample = 1.0
-
-world = load_scene()
-
-screen = np.array([[Color(0.0, 0.0, 0.0) for i in range(HEIGHT)]
-                  for i in range(WIDTH)])
-while True:  # main game loop
+while True:
 
     clock.tick(60)
-    print(clock.get_rawtime())
+    print(f"Le rendu de l'image n°({sample}) a prit: {clock.get_rawtime()}ms")
     # Pour chaque évènements, si c'est un évènement "Exit" on quitte
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
 
-    for ry in HEIGHT_R:
-        y = ry
+    # pour chaque pixel de l'écran
+    # on fait un rendu de rayon de la scène
+    for y in range(height):
         pygame.display.update()
-        for x in WIDTH_R:
-            ccolor = Color(0.0, 0.0, 0.0)
-            sample_count = 1
-            for k in range(sample_count):
+        for x in range(width):
+            color = render_ray(world, x, y, width, height)
 
-                rx = (float(x) + uniform(0, 1)) / WIDTH
-                ry = (float(y) + uniform(0, 1)) / HEIGHT
-                ray = world.camera.get_ray(rx, ry)
-                ray.direction = ray.direction.normalize()
+            screen[x][y] = screen[x][y] + color
 
-                color = Color(1, 1, 1)
-                would_hit = False
-                for c in range(6):  #  16 rebonds
-                    rec = world.intersect(ray)
-
-                    if (rec.hitted):
-
-                        scatter = rec.material.scatter(ray, rec)
-
-                        ray = scatter.scattered
-                        color = color * scatter.color
-                        if (not scatter.bounce):
-                            would_hit = True
-                            break
-                     #   d = dot(rec.normal, ray.direction)
-                    else:
-                        color = color * world.background
-                        would_hit = True
-                        break
-                if not would_hit:
-                    color = Color(0, 0, 0)
-
-                ccolor = ccolor + (color * (1.0/sample_count))
-
-           # print(
-           #     f"{x} {y} color: {color.r} {color.g} {color.b} sample: {screen[x][y]}")
-            screen[x][y] = screen[x][y] + ccolor
-
+            # on fait la moyenne des couleurs
+            # pour avoir une image plus nette au fil du temps
+            # Donc, on fait la moyenne des couleurs des rayons envoyés
             col = (screen[x][y]) * (1.0/float(sample))
+
+            # on affiche la couleur au pixel
             DISPLAYSURF.set_at(
                 (x, y), col.tonemapped().pygame_color())
 
