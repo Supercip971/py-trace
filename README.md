@@ -9,6 +9,7 @@
 
 <br/>
 
+
 ### Résumé
 
 Py-trace est un raytracer codée entièrement en python.
@@ -94,6 +95,15 @@ $ python ./sources/main.py --scene metal-demo
 
 Par limitation, la taille de la fenêtre est fixée au démarrage, mais peut être changée avec les paramètres `--width` et `--height` qui prennent en paramètre la largeur et la hauteur de la fenêtre.
 
+
+## Références
+
+- [raytracing.github.io](https://raytracing.github.io/) qui explique très bien les bases du raytracing.
+- [Wikipedia](https://fr.wikipedia.org/wiki/Ray_tracing)
+- [scratch-pixel](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-ray-tracing/how-does-it-work.html)
+- [raytracing essentials (de NVIDIA)](https://developer.nvidia.com/blog/ray-tracing-essentials-part-1-basics-of-ray-tracing/)
+- [filmic tonemap fast (Shadertoy)](https://www.shadertoy.com/view/tlVXD3), une implémentation du tonemapper ACES rapide.
+- [Casual Shadertoy Path Tracing](https://blog.demofox.org/2020/05/25/casual-shadertoy-path-tracing-1-basic-camera-diffuse-emissive/)
 
 ## License
 
