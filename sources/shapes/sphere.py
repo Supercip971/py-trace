@@ -7,7 +7,7 @@ from ray import Ray
 
 from vector import dot
 
-import math
+from math import sqrt
 
 
 class Sphere(Shape):
@@ -20,7 +20,7 @@ class Sphere(Shape):
 
         pprime = ray.origin - self.center
 
-        a = 1.0
+        a = dot(ray.direction, ray.direction)
         b = 2.0 * dot(ray.direction, pprime)
 
         c = dot(pprime, pprime) - self.radius * self.radius
@@ -30,8 +30,8 @@ class Sphere(Shape):
         if discriminant > 0:
             # on prend les deux valeurs de t1 et t2, et on vérifie si elles sont
             # entre le point minimum et le point maximum du rayon
-            t1 = (-b - discriminant**0.5) / (2.0 * a)
-            t2 = (-b + discriminant**0.5) / (2.0 * a)
+            t1 = (-b - sqrt(discriminant)) / (2.0 * a)
+            t2 = (-b + sqrt(discriminant)) / (2.0 * a)
 
             # on prend la plus petite valeur de t1 et t2 et c'est la valeur 't'
             # de la droite, ainsi, si on l'applique à la droite, on obtient le
