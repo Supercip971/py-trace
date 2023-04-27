@@ -24,11 +24,14 @@ class Glass(Material):
         refraction = refract(ray.direction, record.normal, ef_ior)
         p2 = record.point - ray.direction * 0.01
 
+        # Réflection dans l'angle
         if (random() < schlick(dot(-1.0 * ray.direction, record.normal), ef_ior)):
           #  color = self.color
             angle = abs(dot(-1.0 * ray.direction, record.normal))
             color = self.color * angle + Color(1.0, 1.0, 1.0) * (1.0 - angle)
             return MaterialScatter(Ray(p2, reflect(ray.direction, record.normal)), color)
+
+        # petit hack pour éviter des problèmes de precision avec python
         p2 = record.point + ray.direction * 0.01
 
         return MaterialScatter(Ray(p2, refraction), self.color)
