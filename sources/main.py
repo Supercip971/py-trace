@@ -63,21 +63,26 @@ screen = np.array(
         for i in range(width)
     ])
 sample = 1.0
-while True:
 
-    clock.tick(60)
-    print(f"Le rendu de l'image n°({sample}) a prit: {clock.get_rawtime()}ms")
-    # Pour chaque évènements, si c'est un évènement "Exit" on quitte
+
+def check_event():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
+
+while True:
+
+    clock.tick(60)
+    print(f"Le rendu de l'image n°({sample}) a prit: {clock.get_rawtime()}ms")
+    # Pour chaque évènements, si c'est un évènement "Exit" on quitte
     # pour chaque pixel de l'écran
     # on fait un rendu de rayon de la scène
     for y in range(height):
         pygame.display.update()
         for x in range(width):
+            check_event()
             color = render_ray(world, x, y, width, height)
 
             screen[x][y] = screen[x][y] + color
