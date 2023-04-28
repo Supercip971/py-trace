@@ -26,6 +26,9 @@ class Camera:
         self.half_height = math.tan(math.radians(self.fov) / 2)
         self.half_width = self.aspect_ratio * self.half_height
 
+    def update_ratio(self, ratio):
+        self.aspect_ratio = ratio 
+        self.compute_params()
     # ray from camera to pixel
     def get_ray(self, u, v):
         # u et v sont des valeurs entre 0 et 1 qui représentent la position du

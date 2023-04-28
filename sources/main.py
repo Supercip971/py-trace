@@ -44,11 +44,16 @@ if world is None:
 
 # gestion de la fenêtre et de pygame
 
-ratio = 16.0/9.0
-height = args.height if args.height else 480
-width = args.width if args.width else int(ratio*height)
+# On charge l'aspect ratio par défaut depuis la scène 
+ratio = world.camera.aspect_ratio
+height = int(args.height) if args.height else 480
+width = int(args.width) if args.width else int(ratio*height)
 
+print(f"width: {width} height: {height}") 
 ratio = float(width)/float(height)
+
+# dans le cadre où l'utilisateur impose un ratio 
+world.camera.update_ratio(ratio)
 pygame.init()
 
 clock = pygame.time.Clock()
