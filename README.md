@@ -10,7 +10,26 @@
 <br/>
 
 
-### Résumé
+### Trophée NSI
+
+<p align="center">
+    <img src="./schema/award.svg" alt="award" width="500px" height="100px"/>
+</p>
+
+(Mise à jour `26/05/2023`) Nous sommes honorés d'avoir remporté le prix régional de l'ingénierie (DROM) du concours [Trophées-NSI](https://trophees-nsi.fr/resultats-2023) pour notre projet py-trace. Nous exprimons notre gratitude envers le jury pour cette distinction !
+## Contributeurs
+
+- Clément BELAISE
+- Mathis LEDA
+- Cyprien BOUVIER
+- Sanjay SAGET-GOBARDHAN
+
+
+
+Ce projet nous a permis de recevoir le prix de l'ingénierie
+
+
+## Résumé
 
 Py-trace est un raytracer codée entièrement en python.
 Le programme est capable de générer des images 3D réalistes en utilisant des techniques de rendus avancées en simulant
@@ -19,7 +38,7 @@ de la lumière. Contrairement aux rendus classiques que l'on peut voir dans les 
 
 Voici quelques exemples de rendus que l'on peut obtenir avec py-trace:
 
-### Exemples
+## Exemples
 
 ![demo-scene-verre2](schema/demo-scene-metal.png)
 Scène nommée "demo-metal"
