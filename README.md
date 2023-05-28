@@ -24,11 +24,6 @@
 - Cyprien BOUVIER
 - Sanjay SAGET-GOBARDHAN
 
-
-
-Ce projet nous a permis de recevoir le prix de l'ingénierie
-
-
 ## Résumé
 
 Py-trace est un raytracer codée entièrement en python.
